@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { Book } from '@prisma/client';
+import { Book, UserOnBooks } from '@prisma/client';
 
 @Injectable()
 export class BooksService {
@@ -34,6 +34,24 @@ export class BooksService {
         throw new BadRequestException("Book doesn't exist");
       throw error;
     }
+  }
+
+  public async likeBook(
+    likeBookData: Omit<UserOnBooks, 'id'>,
+  ): Promise<Book> {
+    const { userId, bookId } = likeBookData;
+    return await this.prismaService.book.update({
+      where: { id: bookId },
+      data: {
+        users: {
+          create: {
+            user: {
+              connect: { id: userId },
+            },
+          },
+        },
+      },
+    });
   }
 
   public updateById(

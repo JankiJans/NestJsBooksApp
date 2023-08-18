@@ -14,6 +14,7 @@ import { CreateBookDTO } from './dtos/create-book.dto';
 import { UpdateBookDTO } from './dtos/update-book.dto';
 import { BooksService } from './books.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { FavoriteBookDTO } from './dtos/favorite-book.dto';
 
 @Controller('books')
 export class BooksController {
@@ -35,6 +36,12 @@ export class BooksController {
   @UseGuards(JwtAuthGuard)
   create(@Body() bookData: CreateBookDTO) {
     return this.booksService.create(bookData);
+  }
+
+  @Post('/like')
+  @UseGuards(JwtAuthGuard)
+  likeBook(@Body() likeBook: FavoriteBookDTO) {
+    return this.booksService.likeBook(likeBook);
   }
 
   @Put('/:id')
